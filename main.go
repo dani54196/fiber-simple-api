@@ -5,6 +5,8 @@ import (
 	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/requestid"
 	"github.com/google/uuid"
 	"github.com/joho/godotenv"
 )
@@ -33,23 +35,27 @@ func handleCreateUser(c *fiber.Ctx) error {
 }
 
 func main() {
+	// enviromet variables
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-
+	// fiber
 	app := fiber.New()
-
+	// middlewares
+	app.Use(logger.New())
+	// index route
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")
 	})
-
+	// group routes
+	app.Use(requestid.New())
 	userGroup := app.Group("/users")
 	userGroup.Get("", handleUser)
 	userGroup.Post("", handleCreateUser)
-
+	// get port from env
 	port := os.Getenv("PORT")
-
-	// fmt.Println(port)
+	// Listen
 	app.Listen(":" + port)
+	// fmt.Println(port)
 }

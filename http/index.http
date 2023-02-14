@@ -1,0 +1,17 @@
+@host = http://localhost
+@port = 3000
+@api = {{host}}:{{port}}
+### index
+GET {{api}}/ 
+
+### user
+GET {{api}}/users
+
+### user
+POST {{api}}/users
+Content-Type: application/json
+
+{
+  "Name": "pipo",
+  "UserName": "poppy"
+}
